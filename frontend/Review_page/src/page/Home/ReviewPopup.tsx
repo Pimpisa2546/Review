@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import './popup.css';
 import StarRating from './starRating';
+import Home from './Review';
 
 interface ReviewPopupProps {
   onClose: () => void;
-  onSave: () => void;
+  onSave: (content: string, rating: number | null) => void; // onSave รับ content และ rating เป็นพารามิเตอร์
 }
 
 const ReviewPopup: React.FC<ReviewPopupProps> = ({ onClose, onSave }) => {
@@ -16,7 +17,7 @@ const ReviewPopup: React.FC<ReviewPopupProps> = ({ onClose, onSave }) => {
   const handleSave = async () => {
     if (rating === null) {
       alert("กรุณาเลือกคะแนนก่อนบันทึก");
-      return;
+      return Home;
     }
 
     try {
@@ -26,6 +27,7 @@ const ReviewPopup: React.FC<ReviewPopupProps> = ({ onClose, onSave }) => {
         productsID: productId,
       };
 
+      // ส่งข้อมูลไปยังเซิร์ฟเวอร์ (API)
       const response = await axios.post("http://localhost:8000/review", reviewData, {
         headers: {
           "Content-Type": "application/json",
@@ -34,8 +36,9 @@ const ReviewPopup: React.FC<ReviewPopupProps> = ({ onClose, onSave }) => {
 
       console.log("Review saved:", response.data);
       alert("รีวิวสินค้าสำเร็จ!");
-      onSave();
-    } catch (error) {
+      onSave(comment, rating); // ส่งค่าคอมเมนต์และ rating กลับไปให้ Home component ผ่าน onSave
+    } 
+      catch (error) {
       console.error("Error saving review:", error);
       alert("เกิดข้อผิดพลาดในการบันทึกรีวิว");
     }

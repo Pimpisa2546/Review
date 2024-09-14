@@ -1,0 +1,70 @@
+
+:root {
+  background: linear-gradient(to bottom, #ff7e5f, #feb47b); /* ไล่สีจากสีส้มไปสีชมพู */
+  min-height: 100vh; /* ให้ความสูงขั้นต่ำเท่ากับความสูงของ viewport */
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.home{
+  width: 1371px;
+  max-width: 1400px; /* ขนาดสูงสุดเพื่อไม่ให้ใหญ่เกินไป */
+  min-height: 100vh;
+  background-color: #ffffff;
+  border-radius: 25px;
+  margin-top: -30px;
+}
+
+  
+hr {
+  border: none;
+  border-top: 2px solid #000; /* สีและความหนาของเส้น */
+  margin: 20px 0; /* ระยะห่างด้านบนและล่าง */
+  width: 1100px;
+  margin-left: 250px;
+}
+  
+.box-reviewSell1{
+  width: 1372px;
+  height: 100px;
+  background-color: #b0b0b0;
+  border-radius: 25px;
+  margin-top: 30px;
+  
+}
+
+.box-reviewSell2{
+  width: 1372px;
+  height: 100px;
+  background-color: #b0b0b0;
+  border-radius: 25px;
+  margin-top: 10px;
+  
+}
+
+.user{
+  justify-content: center; /* จัดให้ตำแหน่งกึ่งกลางของคอนเทนเนอร์ */
+  align-items: center;
+  margin-top: 10px;
+  
+}
+
+.detail-Inreview{
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  font-size: 20px;
+  margin-left: 100px;
+  margin-top: -78px;
+}
+
+.review-buy{
+  font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+  font-size: 20px;
+  margin-left: 60px;
+  margin-top: -35px;
+}
+
+.Mega{
+  margin-right: 20px;
+  
+}
+  

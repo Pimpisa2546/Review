@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import { PRODUCTS } from "../../Product";
+import { PRODUCTS } from "../../interfaces/Product";
 import { Course } from "./product";
-import StarRating from './starRating';
 import ReviewPopup from './ReviewPopup';
 import EditReview from './EditReview';
 import truck from "../../icons/truck.png";
@@ -14,7 +13,6 @@ const Home = () => {
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [notification, setNotification] = useState("");
   const [hasReviewed, setHasReviewed] = useState(false); // สถานะสำหรับการรีวิว
-
   
   const showEditPopup = () => {
     setIsEditVisible(true);
@@ -43,6 +41,9 @@ const Home = () => {
     setIsEditVisible(false);
   };
 
+  // สมมติว่าคุณต้องการแสดงชื่อของสินค้าชิ้นแรก
+  const productTitle = PRODUCTS.length > 0 ? PRODUCTS[0].title : 'ไม่มีสินค้า';
+
   return (
     <div className='home'>
       <div className="box-title">
@@ -60,7 +61,7 @@ const Home = () => {
       </div>
 
       <div className="name-product-review">
-        <b>ชื่อสินค้า</b>
+        <b>{productTitle}</b>
       </div>
       <hr />
       <div className="detail-product-review">

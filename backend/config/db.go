@@ -47,19 +47,19 @@ func SetupDatabase() {
 
 	// สร้างสินค้าตัวอย่าง
 	Products := &entity.Products{
-		Title:       "เสื้อ",
-		Description: "เสื้อนักศึกษาสภาพดี",
+		Title:       "กระโปรง",
+		Description: "กระโปรงสีตก",
 		Price:       35.50,
 		Category:    "เสื้อผ้า",
 		Condition:   "มือสอง",
-		Weight:      2.00,
+		Weight:      3.00,
 	}
 	db.Create(Products)
 
 	// สร้างรีวิวตัวอย่าง
 	Review := &entity.Review{
-		Rating:     5,
-		Comment:    "สินค้าดีมาก!!!!!!",
+		Rating:     4,
+		Comment:    "สินค้ามีตำหนินิดหน่อย",
 		Member_id:  Member.ID,
 		ProductsID: Products.ID,
 	}

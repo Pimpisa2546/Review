@@ -32,16 +32,24 @@ const UpdateReview = async (reviewId: number, updatedReview: { rating: number, c
   }
 };
 
-// // ลบรีวิวตาม ID
-// async function DeleteReviewById(id: string) {
-//   return await axios
-//     .delete(`${apiUrl}/review/${id}`, requestOptions)
-//     .then((res) => res)
-//     .catch((e) => e.response);
-// }
+// ฟังก์ชันลบรีวิวตาม ID
+const DeleteReview = async (reviewId: number) => {
+  try {
+    const response = await axios.delete(`http://localhost:8000/review/${reviewId}`, {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    console.log("Response:", response.data);
+    alert("ลบรีวิวสำเร็จ!");
+  } catch (error) {
+    console.error("Error deleting review:", error);
+    alert("เกิดข้อผิดพลาดในการลบรีวิว");
+  }
+};
 
 export {
   CreateReview,
   UpdateReview,
-  
+  DeleteReview,
 };

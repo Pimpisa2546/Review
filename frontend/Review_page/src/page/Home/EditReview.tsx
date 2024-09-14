@@ -3,12 +3,12 @@ import axios from 'axios';
 import './popup.css';
 import StarRating from './starRating';
 
-interface ReviewPopupProps {
+interface EditReviewProps {
   onClose: () => void;
   onSave: () => void;
 }
 
-const ReviewPopup: React.FC<ReviewPopupProps> = ({ onClose, onSave }) => {
+const EditReview: React.FC<EditReviewProps> = ({ onClose, onSave }) => {
   const [rating, setRating] = useState<number | null>(null); // ค่า rating เริ่มต้น
   const [comment, setComment] = useState(''); // ค่า comment เริ่มต้น
   const [productId, setProductID] = useState(1); // ตั้งค่าตัวอย่าง Product ID
@@ -66,4 +66,4 @@ const ReviewPopup: React.FC<ReviewPopupProps> = ({ onClose, onSave }) => {
   );
 };
 
-export default ReviewPopup;
+export default EditReview;
