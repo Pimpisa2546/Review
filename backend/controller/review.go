@@ -3,8 +3,8 @@ package controller
 import (
 	"net/http"
 
-	"example.com/Review/config"
-	"example.com/Review/entity"
+	"github.com/Review_sa/config"
+	"github.com/Review_sa/entity"
 	"github.com/gin-gonic/gin"
 )
 

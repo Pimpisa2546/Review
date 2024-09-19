@@ -10,9 +10,9 @@ type Review struct{
 	Rating int
 	Comment string
 
-	Member_id  uint
-	Member    *Member  `gorm:"foreignKey: member_id"`
+	MemberID  uint
+	Member    *Member  `gorm:"foreignKey: MemberID"`
 
 	ProductsID  uint
-	Products    *Products  `gorm:"foreignKey: products_id"`
+	Products    *Products  `gorm:"foreignKey: ProductsID"`
 }

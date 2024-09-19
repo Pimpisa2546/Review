@@ -1,32 +1,158 @@
 package controller
 
 import (
+	"github.com/Review_sa/config"
+	"github.com/Review_sa/entity"
 	"net/http"
-	"example.com/Review/config"
-	"example.com/Review/entity"
+
 	"github.com/gin-gonic/gin"
 )
 
-func GetProduct(c *gin.Context) {
-	ID := c.Param("id") // รับ room_id จาก URL
+// GET /products
+func GetProducts(c *gin.Context) { // เข้าถึงข้อมูลสินค้าทั้งหมด
+	var products []entity.Products
 
-	var product entity.Products // สร้างตัวแปรเก็บข้อมูล Messages
-
-	db := config.DB() // เชื่อมต่อกับฐานข้อมูล
-
-	// ดึงข้อความทั้งหมดใน RoomChat ที่มี room_id ตามที่ระบุ
-	results := db.Preload("Review").First(&product, ID)
-
-
-	// ตรวจสอบว่าพบข้อมูลหรือไม่
-	if results.Error != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": results.Error.Error()})
+	db := config.DB()
+	result := db.Preload("Seller").Find(&products)
+	if result.Error != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": result.Error.Error()})
 		return
 	}
-	if product.ID == 0 {
-		c.JSON(http.StatusNoContent, gin.H{})
+	c.JSON(http.StatusOK, products)
+}
+
+
+
+func CreateProducts(c *gin.Context) { // สร้างข้อมูลสินค้า
+	var product entity.Products
+
+	// bind เข้าตัวแปร product
+	if err := c.ShouldBindJSON(&product); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-	// ส่งข้อมูล Messages กลับไปในรูปแบบ JSON
+
+	db := config.DB()
+
+	// สร้าง Product
+	p := entity.Products{
+		Title:           product.Title,
+		Description:     product.Description,
+		Price:           product.Price,
+		Category:        product.Category,
+		Picture_product: product.Picture_product,
+		Condition:       product.Condition,
+		Weight:          product.Weight,
+		Status:          product.Status,
+		SellerID:        product.SellerID,
+	}
+
+	// บันทึก
+	if err := db.Create(&p).Error; err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusCreated, gin.H{"message": "Created success", "data": p})
+}
+
+
+// GET /products/:id
+func GetProductsBYID(c *gin.Context) {
+	ID := c.Param("id")
+	var product entity.Products
+
+	db := config.DB()
+
+	// ใช้ Preload เพื่อนำข้อมูล Seller มาใน Product ด้วย
+	result := db.Preload("Seller").First(&product, ID)
+	if result.Error != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": result.Error.Error()})
+		return
+	}
+
 	c.JSON(http.StatusOK, product)
+}
+
+// PATCH /products/:id
+func UpdateProducts(c *gin.Context) { //อัพเดตข้อมูลตาม id
+	var product entity.Products
+
+	ProductID := c.Param("id")
+
+	db := config.DB()
+	result := db.First(&product, ProductID)
+	if result.Error != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "id not found"})
+		return
+	}
+
+	if err := c.ShouldBindJSON(&product); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Bad request, unable to map payload"})
+		return
+	}
+
+	result = db.Save(&product)
+	if result.Error != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Bad request"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Updated successful"})
+}
+
+// DELETE /products/:id
+func DeleteProducts(c *gin.Context) { //ลบข้อมูลตาม id
+	id := c.Param("id")
+	db := config.DB()
+	if tx := db.Exec("DELETE FROM products WHERE id = ?", id); tx.RowsAffected == 0 {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "id not found"})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"message": "Deleted successful"})
+}
+
+
+
+
+func GetProductsByMemberID(c *gin.Context) {
+    memberID := c.Param("member_id")
+    var products []entity.Products
+
+    db := config.DB()
+
+    // ตรวจสอบว่าการเชื่อมโยงตารางและเงื่อนไขถูกต้อง
+    result := db.
+        Joins("JOIN products_orders ON products_orders.product_id = products.id").
+        Joins("JOIN orders ON orders.id = products_orders.order_id").
+        Where("orders.member_id = ?", memberID).
+        Preload("Seller").
+        Find(&products)
+
+    if result.Error != nil {
+        c.JSON(http.StatusNotFound, gin.H{"error": result.Error.Error()})
+        return
+    }
+
+    c.JSON(http.StatusOK, gin.H{"products": products})
+}
+
+func GetProductsBySellerID(c *gin.Context) {
+    sellerID := c.Param("seller_id")
+    var products []entity.Products
+
+    db := config.DB()
+    result := db.
+        Joins("JOIN products_orders ON products_orders.product_id = products.id").
+        Joins("JOIN orders ON orders.id = products_orders.order_id").
+        Where("orders.seller_id = ?", sellerID).
+        Preload("Seller").
+        Find(&products)
+
+    if result.Error != nil {
+        c.JSON(http.StatusNotFound, gin.H{"error": result.Error.Error()})
+        return
+    }
+
+    c.JSON(http.StatusOK, gin.H{"products": products})
 }

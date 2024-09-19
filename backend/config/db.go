@@ -2,7 +2,8 @@ package config
 
 import (
 	"fmt"
-	"example.com/Review/entity"
+
+	"github.com/Review_sa/entity"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
@@ -16,7 +17,7 @@ func DB() *gorm.DB {
 
 // ฟังก์ชันเชื่อมต่อฐานข้อมูล SQLite
 func ConnectionDB() {
-	database, err := gorm.Open(sqlite.Open("sa.db?cache=shared"), &gorm.Config{})
+	database, err := gorm.Open(sqlite.Open("entityPJ.db?cache=shared"), &gorm.Config{})
 	if err != nil {
 		panic("failed to connect database")
 	}
@@ -31,37 +32,40 @@ func SetupDatabase() {
 		&entity.Member{},
 		&entity.Products{},
 		&entity.Review{},
+		&entity.Seller{},
+		&entity.Order{},
+		&entity.Products_order{},
 	)
 
 	// สร้างผู้ใช้ตัวอย่าง
-	hashedPassword, _ := HashPassword("123456")
-	Member := &entity.Member{
-		Username:     "Pimpisa123",
-		Password:     hashedPassword,
-		Email:        "Aum123@gmail.com",
-		First_name:   "Pimpisa",
-		Last_name:    "Pungpat",
-		Phone_number: "0123456789",
-		Address:      "SUT M.8",
-	}
+	// hashedPassword, _ := HashPassword("123456")
+	// Member := &entity.Member{
+	// 	Username:     "Pimpisa123",
+	// 	Password:     hashedPassword,
+	// 	Email:        "Aum123@gmail.com",
+	// 	First_name:   "Pimpisa",
+	// 	Last_name:    "Pungpat",
+	// 	Phone_number: "0123456789",
+	// 	Address:      "SUT M.8",
+	// }
 
-	// สร้างสินค้าตัวอย่าง
-	Products := &entity.Products{
-		Title:       "กระโปรง",
-		Description: "กระโปรงสีตก",
-		Price:       35.50,
-		Category:    "เสื้อผ้า",
-		Condition:   "มือสอง",
-		Weight:      3.00,
-	}
-	db.Create(Products)
+	// // สร้างสินค้าตัวอย่าง
+	// Products := &entity.Products{
+	// 	Title:       "กระโปรง",
+	// 	Description: "กระโปรงสีตก",
+	// 	Price:       35.50,
+	// 	Category:    "เสื้อผ้า",
+	// 	Condition:   "มือสอง",
+	// 	Weight:      3.00,
+	// }
+	// db.FirstOrCreate(Products)
 
-	// สร้างรีวิวตัวอย่าง
-	Review := &entity.Review{
-		Rating:     4,
-		Comment:    "สินค้ามีตำหนินิดหน่อย",
-		Member_id:  Member.ID,
-		ProductsID: Products.ID,
-	}
-	db.Create(Review)
+	// // สร้างรีวิวตัวอย่าง
+	// Review := &entity.Review{
+	// 	Rating:     4,
+	// 	Comment:    "สินค้ามีตำหนินิดหน่อย",
+	// 	Member_id:  Member.ID,
+	// 	ProductsID: Products.ID,
+	// }
+	// db.FirstOrCreate(Review)
 }
