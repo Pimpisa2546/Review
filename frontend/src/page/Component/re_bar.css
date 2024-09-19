@@ -1,0 +1,35 @@
+.nav {
+    width: 1425px;
+    background-color: #0a0a0a;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0px;
+}
+
+.text {
+    display: flex;
+    justify-content: space-between; /* เพิ่มบรรทัดนี้เพื่อจัดระยะระหว่างข้อความ */
+    width: 50%; /* กำหนดความกว้างของ .text */
+    color: aliceblue;
+    align-items: center;
+}
+
+.text p {
+    cursor: pointer;
+    padding: 10px;
+    transition: all 0.3s ease;
+}
+
+.text p.active {
+    color: #eb8245;
+    text-shadow: 0 0 10px #f65e06;
+    font-weight: bold;
+}
+
+.divider {
+    width: 1px;
+    height: 30px;
+    background-color: aliceblue;
+    opacity: 0.5;
+}
