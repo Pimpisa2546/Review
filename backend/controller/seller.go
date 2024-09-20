@@ -2,11 +2,11 @@ package controller
 
 import (
 	"net/http"
-	"github.com/gin-gonic/gin"
+
 	"github.com/Review_sa/config"
 	"github.com/Review_sa/entity"
+	"github.com/gin-gonic/gin"
 )
-
 
 func CreateSeller(c *gin.Context) { // สร้างข้อมูลผู้ขาย
 	var seller entity.Seller
@@ -57,5 +57,3 @@ func GetSeller(c *gin.Context) { //เข้าถึงข้อมูลผู
 	}
 	c.JSON(http.StatusOK, seller)
 }
-
-

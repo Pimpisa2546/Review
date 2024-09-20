@@ -2,6 +2,7 @@ package controller
 
 import (
 	"net/http"
+	"gorm.io/gorm"
 
 	"github.com/Review_sa/config"
 	"github.com/Review_sa/entity"
@@ -78,4 +79,43 @@ func UpdateReview(c *gin.Context) {
 
 	// ส่งผลลัพธ์กลับไปยังผู้ใช้
 	c.JSON(http.StatusOK, gin.H{"message": "บันทึกการแก้ไขรีวิวแล้ว"})
+}
+
+// DELETE /review/:id
+// DeleteReview ลบรีวิวตาม ID
+func DeleteReview(c *gin.Context) {
+	id := c.Param("id")
+	db := config.DB()
+
+	var review entity.Review
+
+	// ตรวจสอบว่ารีวิวมีอยู่ในฐานข้อมูลหรือไม่
+	if err := db.First(&review, id).Error; err != nil {
+		if err == gorm.ErrRecordNotFound {
+			c.JSON(http.StatusNotFound, gin.H{"error": "id not found"})
+			return
+		}
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not find review"})
+		return
+	}
+
+	// ลบรีวิว
+	if err := db.Delete(&review).Error; err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not delete review"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"message": "Deleted successfully"})
+}
+
+func GetAllReview(c *gin.Context) { // เข้าถึงข้อมูลMemberทั้งหมด
+	var review []entity.Review
+
+	db := config.DB()
+	result := db.Find(&review)
+	if result.Error != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": result.Error.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, review)
 }

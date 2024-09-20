@@ -27,6 +27,7 @@ func main() {
 	{
 		router.POST("/member", controller.CreateMember)
 		router.GET("/member/:id", controller.GetMember)
+		router.GET("/member", controller.GetAllmember)
 
 		router.POST("/sellers", controller.CreateSeller)
 		router.GET("/sellers/:id", controller.GetSeller)
@@ -43,6 +44,8 @@ func main() {
 		// User Routes
 		router.POST("/review", controller.CreateReview)
 		router.PUT("/review/:id", controller.UpdateReview)
+		router.DELETE("/review/:id", controller.DeleteReview)
+		router.GET("/review", controller.GetAllReview)
 
 		router.POST("/products", controller.CreateProducts)
 		router.GET("/products", controller.GetProducts)

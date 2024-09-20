@@ -1,40 +1,46 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Table, Spin, Alert, Button, Modal, Input } from 'antd';
-import { useNavigate } from 'react-router-dom'; // ใช้ useNavigate แทน useHistory
-import StarRating from '../star/starrating';
+import { Table, Spin, Alert, Button, Modal } from 'antd';
 import { Product } from '../interface/product';
-import { Review } from '../interface/review'; // นำเข้า interface Review
 
-const ProductDisplay: React.FC = () => {
+interface Review {
+  Rating: number;
+  Comment: string;
+  MemberID: number;
+  ProductsID: number; // เพิ่ม ProductsID ในรีวิว
+}
+
+const ReviewPage: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [reviewText, setReviewText] = useState<string>('');
-  const [rating, setRating] = useState<number>(5);
-  const navigate = useNavigate(); // ใช้ useNavigate แทน useHistory
+  const [reviews, setReviews] = useState<Review[]>([]);
 
   useEffect(() => {
-    const fetchProductsAndReviews = async () => {
+    const fetchProducts = async () => {
       try {
-        const productsResponse = await axios.get<Product[]>('http://localhost:8000/products');
-        const reviewsResponse = await axios.get<Review[]>('http://localhost:8000/review');
-
-        const reviewedProductIds = new Set(reviewsResponse.data.map(review => review.ProductsID));
-
-        const filteredProducts = productsResponse.data.filter(product => !reviewedProductIds.has(product.ID!));
-
-        setProducts(filteredProducts);
+        const response = await axios.get<Product[]>('http://localhost:8000/products');
+        setProducts(response.data);
       } catch (err) {
         setError('Error fetching product data');
+      }
+    };
+
+    const fetchReviews = async () => {
+      try {
+        const response = await axios.get<Review[]>('http://localhost:8000/review'); // ดึงรีวิวทั้งหมด
+        setReviews(response.data);
+      } catch (err) {
+        console.error('Error fetching reviews:', err);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchProductsAndReviews();
+    fetchProducts();
+    fetchReviews();
   }, []);
 
   const showModal = (product: Product) => {
@@ -42,39 +48,23 @@ const ProductDisplay: React.FC = () => {
     setIsModalVisible(true);
   };
 
-  const handleOk = async () => {
-    if (selectedProduct) {
-      try {
-        await axios.post('http://localhost:8000/review', {
-          Rating: rating,
-          Comment: reviewText,
-          MemberID: 1, // MemberID ตัวอย่าง
-          ProductsID: selectedProduct.ID,
-        });
-
-        // นำทางไปยังหน้ารีวิวหลังจากส่ง
-        navigate('/review', { state: selectedProduct });
-
-        setIsModalVisible(false);
-        setReviewText('');
-        setRating(5);
-      } catch (err) {
-        console.error('Error submitting review:', err);
-      }
-    }
-  };
-
   const handleCancel = () => {
     setIsModalVisible(false);
+    setSelectedProduct(null);
   };
 
   if (loading) return <Spin tip="Loading products..." />;
   if (error) return <Alert message={error} type="error" />;
 
+  // กรองผลิตภัณฑ์ที่มีรีวิว
+  const productsWithReviews = products.filter((product) =>
+    reviews.some((review) => review.ProductsID === product.ID)
+  );
+
   return (
     <div>
       <Table
-        dataSource={products}
+        dataSource={productsWithReviews} // ใช้ผลิตภัณฑ์ที่มีรีวิว
         columns={[
           {
             title: <div style={{ textAlign: 'center' }}>รูป</div>,
@@ -97,7 +87,7 @@ const ProductDisplay: React.FC = () => {
             title: <div style={{ textAlign: 'center' }}>ชื่อสินค้า</div>,
             dataIndex: 'Title',
             key: 'Title',
-            width: 200, // กำหนดความกว้างของคอลัมน์ที่นี่
+            width: 800, // กำหนดความกว้างของคอลัมน์ที่นี่
           },
           {
             title: <div style={{ textAlign: 'center' }}>ราคา</div>,
@@ -108,13 +98,13 @@ const ProductDisplay: React.FC = () => {
             width: 200, // กำหนดความกว้างของคอลัมน์ที่นี่
           },
           {
-            title: <div style={{ textAlign: 'center' }}>รีวิว</div>,
+            title: <div style={{ textAlign: 'center' }}>ดูรีวิว</div>,
             key: 'review',
             align: 'center',
             width: 200, // กำหนดความกว้างของคอลัมน์ที่นี่
             render: (_, record) => (
               <Button onClick={() => showModal(record)} type="primary">
-                รีวิวสินค้า
+                ดูรีวิว
               </Button>
             ),
           },
@@ -126,22 +116,25 @@ const ProductDisplay: React.FC = () => {
       <Modal
         title={`รีวิวสินค้า: ${selectedProduct?.Title}`}
         visible={isModalVisible}
-        onOk={handleOk}
         onCancel={handleCancel}
-        okText="ส่งรีวิว"
-        cancelText="ยกเลิก"
+        footer={null}
       >
-        <p>{`คุณกำลังรีวิวสินค้า: ${selectedProduct?.Title}`}</p>
-        <StarRating totalStars={5} onSelect={setRating} />
-        <Input.TextArea
-          value={reviewText}
-          onChange={(e) => setReviewText(e.target.value)}
-          rows={4}
-          placeholder="เขียนรีวิวของคุณที่นี่..."
-        />
+        <p>{`คุณกำลังดูรีวิวสินค้า: ${selectedProduct?.Title}`}</p>
+        {reviews.length > 0 ? (
+          reviews
+            .filter((review) => review.ProductsID === selectedProduct?.ID) // กรองรีวิวที่ตรงกับผลิตภัณฑ์ที่เลือก
+            .map((review, index) => (
+              <div key={index} style={{ marginBottom: '16px' }}>
+                <p>คะแนน: {review.Rating} ⭐</p>
+                <p>ความคิดเห็น: {review.Comment}</p>
+              </div>
+            ))
+        ) : (
+          <p>ยังไม่มีรีวิวสำหรับสินค้านี้</p>
+        )}
       </Modal>
     </div>
   );
 };
 
-export default ProductDisplay;
+export default ReviewPage;

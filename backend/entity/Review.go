@@ -6,7 +6,6 @@ import(
 
 type Review struct{
 	gorm.Model
-	//Review_id int `gorm:"primaryKey"`
 	Rating int
 	Comment string
 

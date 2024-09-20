@@ -60,3 +60,15 @@ func GetMember(c *gin.Context) {
 
 	c.JSON(http.StatusOK, member)
 }
+
+func GetAllmember(c *gin.Context) { // เข้าถึงข้อมูลMemberทั้งหมด
+	var member []entity.Member
+
+	db := config.DB()
+	result := db.Preload("Sellers").Find(&member)
+	if result.Error != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": result.Error.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, member)
+}
