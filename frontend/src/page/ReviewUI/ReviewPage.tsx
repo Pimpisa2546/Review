@@ -106,8 +106,8 @@ const ReviewPage: React.FC = () => {
             key: 'review',
             align: 'center',
             width: 200, // กำหนดความกว้างของคอลัมน์ที่นี่
-            render: (_, record) => (
-              <Button onClick={() => showModal(record)} type="primary">
+            render: (record) => (
+              <Button onClick={() => showModal(record)} type="primary" style={{ backgroundColor: '#ff8c1a', borderColor: '#ff8c1a' }}>
                 ดูรีวิว
               </Button>
             ),
@@ -130,7 +130,6 @@ const ReviewPage: React.FC = () => {
             .map((review, index) => (
               <div key={index} style={{ marginBottom: '16px' }}>
                 <p>คะแนน: <Rate allowHalf disabled value={review.Rating || 0} /></p>
-                  {/* แสดงดาว */}
                 <p>ความคิดเห็น: {review.Comment}</p>
               </div>
             ))

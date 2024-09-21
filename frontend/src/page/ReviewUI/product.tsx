@@ -121,7 +121,7 @@ const ProductDisplay: React.FC = () => {
             align: 'center',
             width: 200,
             render: (_, record) => (
-              <Button onClick={() => showModal(record)} type="primary">
+              <Button onClick={() => showModal(record)} type="primary" style={{ backgroundColor: '#ff8c1a', borderColor: '#ff8c1a' }}>
                 รีวิวสินค้า
               </Button>
             ),
@@ -139,7 +139,6 @@ const ProductDisplay: React.FC = () => {
         okText="ส่งรีวิว"
         cancelText="ยกเลิก"
       >
-        <p>{`คุณกำลังรีวิวสินค้า: ${selectedProduct?.Title}`}</p>
         <StarRating totalStars={5} onSelect={setRating} />
         <Input.TextArea
           value={reviewText}

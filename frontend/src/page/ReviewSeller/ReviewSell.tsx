@@ -116,7 +116,7 @@ const ReviewSell: React.FC = () => {
             align: 'center',
             width: 200,
             render: (_, record) => (
-              <Button onClick={() => showModal(record)} type="primary" style={{ backgroundColor: '#4CAF50', borderColor: '#4CAF50' }}> // เปลี่ยนสีที่นี่
+              <Button onClick={() => showModal(record)} type="primary" style={{ backgroundColor: '#ff8c1a', borderColor: '#ff8c1a' }}>
                 ดูรีวิว
                 
               </Button>
@@ -130,13 +130,13 @@ const ReviewSell: React.FC = () => {
       />
 
       <Modal
-        title={`รีวิวสินค้า: ${selectedProduct?.Title}`}
+        title={`คุณกำลังดูรีวิวสินค้า: ${selectedProduct?.Title}`}
         visible={isModalVisible}
         onCancel={handleCancel}
         footer={null}
         className="custom-modal"
       >
-        <p>{`คุณกำลังดูรีวิวสินค้า: ${selectedProduct?.Title}`}</p>
+        {/* <p>{`คุณกำลังดูรีวิวสินค้า: ${selectedProduct?.Title}`}</p> */}
         {reviews.length > 0 ? (
           reviews
             .filter((review) => review.ProductsID === selectedProduct?.ID)
@@ -144,7 +144,7 @@ const ReviewSell: React.FC = () => {
               const member = members.find(member => member.ID === review.MemberID);
               return (
                 <div key={index} style={{ marginBottom: '16px', padding: '10px', border: '1px solid #f0f0f0', borderRadius: '5px', backgroundColor: '#f4f0ec' }}>
-                  <p style={{ margin: '0' }}>คะแนน: <Rate className="custom-rate" allowHalf disabled value={review.Rating || 0} /></p>
+                  <p style={{ margin: '0' }}>คะแนน: <Rate allowHalf disabled value={review.Rating || 0} /></p>
                   <p>ความคิดเห็น: {review.Comment}</p>
                   {member && <p>โดย: {member.Username}</p>}
                 </div>

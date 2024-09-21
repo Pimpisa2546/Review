@@ -20,11 +20,6 @@
     text-align: center; /* จัดข้อความให้อยู่ตรงกลาง */
   }
   
-  
-  .custom-rate .ant-rate-star:hover,
-  .custom-rate .ant-rate-star.ant-rate-star-full {
-    color: #fcc200; /* สีเมื่อเลือกหรือ hover */
-  }
 
   .custom-modal {
     /*border: 2px solid #1890ff; /* เปลี่ยนสีกรอบเป็นสีฟ้า */
@@ -32,6 +27,13 @@
     /*background-color: #c54f4f; /* สีพื้นหลังของโมดัล */
   }
   
-  .custom-rate .ant-rate-star {
-    color: #d0d1d0; /* สีเทาเข้ม */
+  .custom-button {
+    background-color: #ff8c00; /* เปลี่ยนสีพื้นหลัง */
+    border-color: #ff8c00; /* เปลี่ยนสีกรอบ */
+    color: white; /* เปลี่ยนสีข้อความ */
+  }
+
+  .custom-modalsellrate .ant-modal-body {
+    max-height: 400px; /* ปรับความสูงตามต้องการ */
+    overflow-y: auto;  /* ทำให้สามารถเลื่อนในแนวตั้งได้ */
   }
