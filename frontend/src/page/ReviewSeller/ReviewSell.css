@@ -20,3 +20,18 @@
     text-align: center; /* จัดข้อความให้อยู่ตรงกลาง */
   }
   
+  
+  .custom-rate .ant-rate-star:hover,
+  .custom-rate .ant-rate-star.ant-rate-star-full {
+    color: #fcc200; /* สีเมื่อเลือกหรือ hover */
+  }
+
+  .custom-modal {
+    /*border: 2px solid #1890ff; /* เปลี่ยนสีกรอบเป็นสีฟ้า */
+    border-radius: 10px; /* ทำให้กรอบมีความโค้ง */
+    /*background-color: #c54f4f; /* สีพื้นหลังของโมดัล */
+  }
+  
+  .custom-rate .ant-rate-star {
+    color: #d0d1d0; /* สีเทาเข้ม */
+  }

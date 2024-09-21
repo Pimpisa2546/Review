@@ -1,10 +1,21 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import './re_bar.css';
-import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
-  const [active, setActive] = useState('not-review'); // ตั้งค่าเริ่มต้นเป็น reviewed หรือ not-review ขึ้นอยู่กับหน้าที่เริ่ม
+  const [active, setActive] = useState('not-review');
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    // ตั้งค่า active ตาม URL
+    const path = location.pathname.split('/')[1]; // แยก path และเลือกส่วนแรก
+    if (path === 'review') {
+      setActive('review');
+    } else {
+      setActive('not-review');
+    }
+  }, [location]);
 
   const handleClick = (page: string) => {
     setActive(page);
@@ -20,7 +31,7 @@ const Navbar = () => {
         >
           ยังไม่ได้รีวิว
         </p>
-        <div className="divider"></div> {/* เส้นแบ่ง */}
+        <div className="divider"></div>
         <p
           onClick={() => handleClick('review')}
           className={active === 'review' ? 'active' : ''}
@@ -30,7 +41,6 @@ const Navbar = () => {
       </div>
     </div>
   );
-  
 };
 
 export default Navbar;

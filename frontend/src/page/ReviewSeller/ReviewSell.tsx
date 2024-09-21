@@ -5,7 +5,7 @@ import { Product } from '../interface/product';
 import { Review } from '../interface/review';
 import { Member } from '../interface/member'; // import interface สำหรับ Member
 import Navbarproducts from '../Component/navbarproducts';
-import './ReviewSell.css';
+import './ReviewSell.css'; // นำเข้า CSS
 
 const ReviewSell: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -116,9 +116,11 @@ const ReviewSell: React.FC = () => {
             align: 'center',
             width: 200,
             render: (_, record) => (
-              <Button onClick={() => showModal(record)} type="primary">
+              <Button onClick={() => showModal(record)} type="primary" style={{ backgroundColor: '#4CAF50', borderColor: '#4CAF50' }}> // เปลี่ยนสีที่นี่
                 ดูรีวิว
+                
               </Button>
+              
             ),
             className: 'column-review',
           },
@@ -132,26 +134,25 @@ const ReviewSell: React.FC = () => {
         visible={isModalVisible}
         onCancel={handleCancel}
         footer={null}
+        className="custom-modal"
       >
         <p>{`คุณกำลังดูรีวิวสินค้า: ${selectedProduct?.Title}`}</p>
         {reviews.length > 0 ? (
-  reviews
-    .filter((review) => review.ProductsID === selectedProduct?.ID)
-    .map((review, index) => {
-      const member = members.find(member => member.ID === review.MemberID); // กำหนด MemberID เป็น 4
-      return (
-        <div key={index} style={{marginBottom: '16px', padding: '10px', border: '1px solid #f0f0f0', borderRadius: '5px', backgroundColor: '#fafafa' }}>
-          <p>คะแนน: {review.Rating} ⭐</p>
-          <Rate allowHalf disabled value={review.Rating || 0} />  {/* แสดงดาว */}
-          <p>ความคิดเห็น: {review.Comment}</p>
-          {member && <p>โดย: {member.Username}</p>} {/* แสดงชื่อสมาชิก */}
-        </div>
-      );
-    })
-    ) : (
-        <p>ยังไม่มีรีวิวสำหรับสินค้านี้</p>
-    )}
-
+          reviews
+            .filter((review) => review.ProductsID === selectedProduct?.ID)
+            .map((review, index) => {
+              const member = members.find(member => member.ID === review.MemberID);
+              return (
+                <div key={index} style={{ marginBottom: '16px', padding: '10px', border: '1px solid #f0f0f0', borderRadius: '5px', backgroundColor: '#f4f0ec' }}>
+                  <p style={{ margin: '0' }}>คะแนน: <Rate className="custom-rate" allowHalf disabled value={review.Rating || 0} /></p>
+                  <p>ความคิดเห็น: {review.Comment}</p>
+                  {member && <p>โดย: {member.Username}</p>}
+                </div>
+              );
+            })
+        ) : (
+          <p>ยังไม่มีรีวิวสำหรับสินค้านี้</p>
+        )}
       </Modal>
     </div>
   );

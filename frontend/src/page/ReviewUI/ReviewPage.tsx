@@ -118,19 +118,19 @@ const ReviewPage: React.FC = () => {
       />
 
       <Modal
-        title={`รีวิวสินค้า: ${selectedProduct?.Title}`}
+        title={`คุณกำลังดูรีวิวสินค้า: ${selectedProduct?.Title}`}
         visible={isModalVisible}
         onCancel={handleCancel}
         footer={null}
       >
-        <p>{`คุณกำลังดูรีวิวสินค้า: ${selectedProduct?.Title}`}</p>
+        {/* <p>{`คุณกำลังดูรีวิวสินค้า: ${selectedProduct?.Title}`}</p> */}
         {reviews.length > 0 ? (
           reviews
             .filter((review) => review.ProductsID === selectedProduct?.ID) // กรองรีวิวที่ตรงกับผลิตภัณฑ์ที่เลือก
             .map((review, index) => (
               <div key={index} style={{ marginBottom: '16px' }}>
-                <p>คะแนน: {review.Rating} ⭐</p>
-                <Rate allowHalf disabled value={review.Rating || 0} />  {/* แสดงดาว */}
+                <p>คะแนน: <Rate allowHalf disabled value={review.Rating || 0} /></p>
+                  {/* แสดงดาว */}
                 <p>ความคิดเห็น: {review.Comment}</p>
               </div>
             ))
