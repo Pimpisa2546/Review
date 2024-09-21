@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Table, Spin, Alert, Button, Modal } from 'antd';
+import { Table, Spin, Alert, Button, Modal,Rate } from 'antd';
 import { Product } from '../interface/product';
 import Navbar from "../Component/Navbar";
 import Re_bar from "../Component/re_bar";
-
 
 interface Review {
   Rating: number;
@@ -131,6 +130,7 @@ const ReviewPage: React.FC = () => {
             .map((review, index) => (
               <div key={index} style={{ marginBottom: '16px' }}>
                 <p>คะแนน: {review.Rating} ⭐</p>
+                <Rate allowHalf disabled value={review.Rating || 0} />  {/* แสดงดาว */}
                 <p>ความคิดเห็น: {review.Comment}</p>
               </div>
             ))

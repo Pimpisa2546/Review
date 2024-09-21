@@ -1,5 +1,6 @@
 export interface Member{
-    Username?:  string;
+	ID?: number;
+  	Username?: string;
 	Password?:  string;
 	Email?:     string;
 	FirstName?: string;

@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Table, Spin, Alert, Button, Modal, Input } from 'antd';
-import { useNavigate } from 'react-router-dom'; // ใช้ useNavigate แทน useHistory
+import { useNavigate } from 'react-router-dom';
 import StarRating from '../star/starrating';
 import { Product } from '../interface/product';
-import { Review } from '../interface/review'; // นำเข้า interface Review
+import { Review } from '../interface/review';
 import Navbar from "../Component/Navbar";
 import Re_bar from "../Component/re_bar";
-
 
 const ProductDisplay: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
@@ -17,7 +16,12 @@ const ProductDisplay: React.FC = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [reviewText, setReviewText] = useState<string>('');
   const [rating, setRating] = useState<number>(5);
-  const navigate = useNavigate(); // ใช้ useNavigate แทน useHistory
+  const navigate = useNavigate();
+
+  // กำหนด MemberID เป็น 4
+  const getMemberByID = () => {
+    return 4; // ตั้งค่า MemberID เป็น 4
+  };
 
   useEffect(() => {
     const fetchProductsAndReviews = async () => {
@@ -26,7 +30,6 @@ const ProductDisplay: React.FC = () => {
         const reviewsResponse = await axios.get<Review[]>('http://localhost:8000/review');
 
         const reviewedProductIds = new Set(reviewsResponse.data.map(review => review.ProductsID));
-
         const filteredProducts = productsResponse.data.filter(product => !reviewedProductIds.has(product.ID!));
 
         setProducts(filteredProducts);
@@ -46,16 +49,16 @@ const ProductDisplay: React.FC = () => {
   };
 
   const handleOk = async () => {
+    const memberID = getMemberByID(); // ดึง MemberID ที่นี่
     if (selectedProduct) {
       try {
         await axios.post('http://localhost:8000/review', {
           Rating: rating,
           Comment: reviewText,
-          MemberID: 1, // MemberID ตัวอย่าง
           ProductsID: selectedProduct.ID,
+          MemberID: memberID, // ส่ง MemberID
         });
 
-        // นำทางไปยังหน้ารีวิวหลังจากส่ง
         navigate('/review', { state: selectedProduct });
 
         setIsModalVisible(false);
@@ -86,7 +89,7 @@ const ProductDisplay: React.FC = () => {
             dataIndex: 'Picture_product',
             key: 'Picture_product',
             align: 'center',
-            width: 200, // กำหนดความกว้างของคอลัมน์ที่นี่
+            width: 200,
             render: (text: string) => (
               <img
                 src={text}
@@ -102,21 +105,21 @@ const ProductDisplay: React.FC = () => {
             title: <div style={{ textAlign: 'center' }}>Title</div>,
             dataIndex: 'Title',
             key: 'Title',
-            width: 800, // กำหนดความกว้างของคอลัมน์ที่นี่
+            width: 800,
           },
           {
             title: <div style={{ textAlign: 'center' }}>Price</div>,
             dataIndex: 'Price',
             key: 'Price',
-            render: (text: number) => (text !== undefined ? `฿${text.toFixed(2)}` : 'N/A'),
             align: 'center',
-            width: 200, // กำหนดความกว้างของคอลัมน์ที่นี่
+            width: 200,
+            render: (text: number) => (text !== undefined ? `฿${text.toFixed(2)}` : 'N/A'),
           },
           {
             title: <div style={{ textAlign: 'center' }}>Review</div>,
             key: 'review',
             align: 'center',
-            width: 200, // กำหนดความกว้างของคอลัมน์ที่นี่
+            width: 200,
             render: (_, record) => (
               <Button onClick={() => showModal(record)} type="primary">
                 รีวิวสินค้า

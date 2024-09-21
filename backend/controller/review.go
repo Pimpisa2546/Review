@@ -24,9 +24,28 @@ func CreateReview(c *gin.Context) {
 
 	// ตรวจสอบว่าสินค้าที่รีวิวมีอยู่ในระบบหรือไม่
 	var product entity.Products
-	db.First(&product, review.ProductsID)
-	if product.ID == 0 {
+	if err := db.First(&product, review.ProductsID).Error; err != nil {
 		c.JSON(http.StatusNotFound, gin.H{"error": "ไม่พบสินค้าดังกล่าว"})
+		return
+	}
+
+	// ตรวจสอบว่ามีสมาชิกอยู่ในระบบหรือไม่
+	var member entity.Member
+	if err := db.First(&member, review.MemberID).Error; err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"error": "ไม่พบสมาชิกดังกล่าว"})
+		return
+	}
+
+	// ตรวจสอบว่าสมาชิกเป็นผู้ขายสินค้านี้หรือไม่
+	if product.SellerID != nil && member.ID == *product.SellerID {
+		c.JSON(http.StatusForbidden, gin.H{"error": "คุณไม่สามารถรีวิวสินค้าของตัวเองได้"})
+		return
+	}
+
+	// ตรวจสอบว่ามีรีวิวจากสมาชิกนี้อยู่แล้วหรือไม่
+	var existingReview entity.Review
+	if err := db.Where("products_id = ? AND member_id = ?", review.ProductsID, review.MemberID).First(&existingReview).Error; err == nil {
+		c.JSON(http.StatusConflict, gin.H{"error": "คุณได้รีวิวสินค้านี้ไปแล้ว"})
 		return
 	}
 
@@ -35,6 +54,7 @@ func CreateReview(c *gin.Context) {
 		Rating:     review.Rating,
 		Comment:    review.Comment,
 		ProductsID: review.ProductsID,
+		MemberID:   review.MemberID, // บันทึก MemberID ที่ส่งมา
 	}
 
 	// บันทึกรีวิวลงฐานข้อมูล
@@ -46,6 +66,8 @@ func CreateReview(c *gin.Context) {
 	// ส่งผลลัพธ์กลับไปยังผู้ใช้
 	c.JSON(http.StatusCreated, gin.H{"message": "รีวิวสินค้าแล้ว", "data": r})
 }
+
+
 
 // UpdateReview - อัปเดตรีวิวตาม ID
 func UpdateReview(c *gin.Context) {

@@ -10,5 +10,6 @@ export interface Product {
     Condition: string;
     Weight: number;
     Status: string;
+    SellerID?: number;
   }
   

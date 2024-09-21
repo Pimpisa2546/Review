@@ -16,4 +16,5 @@ type Member struct {
 	ProfilePic  string
 	Orders      []Order `gorm:"foreignKey:MemberID"`
 	Sellers     Seller  `gorm:"foreignKey:MemberID"`
+	Reviews  []Review  `gorm:"foreignKey:MemberID"`
 }

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Table, Spin, Alert, Button, Modal } from 'antd';
+import { Table, Spin, Alert, Button, Modal, Rate } from 'antd';
 import { Product } from '../interface/product';
 import { Review } from '../interface/review';
+import { Member } from '../interface/member'; // import interface สำหรับ Member
 import Navbarproducts from '../Component/navbarproducts';
 import './ReviewSell.css';
 
@@ -13,8 +14,9 @@ const ReviewSell: React.FC = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [reviews, setReviews] = useState<Review[]>([]);
+  const [members, setMembers] = useState<Member[]>([]); // state สำหรับเก็บข้อมูลสมาชิก
 
-  const sellerID = 1;
+  const sellerID = 1; // sellerID อันนี้ set ไว้อยู่
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -22,7 +24,7 @@ const ReviewSell: React.FC = () => {
         const response = await axios.get<Product[]>(`http://localhost:8000/products/seller/${sellerID}`);
         setProducts((response.data as any).products || response.data);
       } catch (err) {
-        setError('Error fetching product data');
+        setError('เกิดข้อผิดพลาดในการดึงข้อมูลสินค้า');
       }
     };
 
@@ -31,7 +33,16 @@ const ReviewSell: React.FC = () => {
         const response = await axios.get<Review[]>('http://localhost:8000/review');
         setReviews(response.data);
       } catch (err) {
-        console.error('Error fetching reviews:', err);
+        console.error('เกิดข้อผิดพลาดในการดึงข้อมูลรีวิว:', err);
+      }
+    };
+
+    const fetchMembers = async () => { // ฟังก์ชันสำหรับดึงข้อมูลสมาชิก
+      try {
+        const response = await axios.get<Member[]>('http://localhost:8000/member');
+        setMembers(response.data);
+      } catch (err) {
+        console.error('Error fetching members:', err);
       } finally {
         setLoading(false);
       }
@@ -39,6 +50,7 @@ const ReviewSell: React.FC = () => {
 
     fetchProducts();
     fetchReviews();
+    fetchMembers(); // เรียกใช้ฟังก์ชันเพื่อดึงข้อมูลสมาชิก
   }, [sellerID]);
 
   const showModal = (product: Product) => {
@@ -52,7 +64,6 @@ const ReviewSell: React.FC = () => {
   };
 
   if (loading) return <Spin tip="Loading products..." />;
-
   if (error) return <Alert message={error} type="error" />;
 
   const productsWithReviews = products.filter((product) =>
@@ -66,7 +77,7 @@ const ReviewSell: React.FC = () => {
         dataSource={productsWithReviews}
         columns={[
           {
-            title: <div style={{ textAlign: 'center'}}>Picture</div>,
+            title: <div style={{ textAlign: 'center' }}>Picture</div>,
             dataIndex: 'Picture_product',
             key: 'Picture_product',
             align: 'center',
@@ -91,7 +102,7 @@ const ReviewSell: React.FC = () => {
             className: 'column-title',
           },
           {
-            title: <div style={{ textAlign: 'center'}}>Price</div>,
+            title: <div style={{ textAlign: 'center' }}>Price</div>,
             dataIndex: 'Price',
             key: 'Price',
             render: (text: number) => (text !== undefined ? `฿${text.toFixed(2)}` : 'N/A'),
@@ -124,17 +135,23 @@ const ReviewSell: React.FC = () => {
       >
         <p>{`คุณกำลังดูรีวิวสินค้า: ${selectedProduct?.Title}`}</p>
         {reviews.length > 0 ? (
-          reviews
-            .filter((review) => review.ProductsID === selectedProduct?.ID)
-            .map((review, index) => (
-              <div key={index} style={{ marginBottom: '16px' }}>
-                <p>คะแนน: {review.Rating} ⭐</p>
-                <p>ความคิดเห็น: {review.Comment}</p>
-              </div>
-            ))
-        ) : (
-          <p>ยังไม่มีรีวิวสำหรับสินค้านี้</p>
-        )}
+  reviews
+    .filter((review) => review.ProductsID === selectedProduct?.ID)
+    .map((review, index) => {
+      const member = members.find(member => member.ID === review.MemberID); // กำหนด MemberID เป็น 4
+      return (
+        <div key={index} style={{marginBottom: '16px', padding: '10px', border: '1px solid #f0f0f0', borderRadius: '5px', backgroundColor: '#fafafa' }}>
+          <p>คะแนน: {review.Rating} ⭐</p>
+          <Rate allowHalf disabled value={review.Rating || 0} />  {/* แสดงดาว */}
+          <p>ความคิดเห็น: {review.Comment}</p>
+          {member && <p>โดย: {member.Username}</p>} {/* แสดงชื่อสมาชิก */}
+        </div>
+      );
+    })
+    ) : (
+        <p>ยังไม่มีรีวิวสำหรับสินค้านี้</p>
+    )}
+
       </Modal>
     </div>
   );
