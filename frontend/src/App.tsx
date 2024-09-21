@@ -1,22 +1,19 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Navbar from "../src/page/Component/Navbar";
-import Re_bar from "../src/page/Component/re_bar";
-import ProductDisplay from "../src/page/ProductUI/product"; // นำเข้าคอมโพเนนต์ ProductDisplay
-import ReviewPage from "../src/page/ProductUI/ReviewPage"
+import ProductDisplay from "./page/ReviewUI/product";
+import ReviewPage from "./page/ReviewUI/ReviewPage";
+import ReviewSell from "./page/ReviewSeller/ReviewSell";
 
 function App() {
   return (
     <div className="App">
       <Router>
-        <Navbar />
-        <Re_bar />
         <Routes>
-          <Route path="/" element={<ProductDisplay />} /> {/* เส้นทางหลัก */}
-          <Route path="/not-review" element={<ProductDisplay />} />
-          <Route path="/reviewed" element={<ReviewPage />} />
-          <Route path="/product/:id" element={<ProductDisplay />} /> {/* เส้นทางสำหรับแสดงรายละเอียดสินค้า */}
+          <Route path="/" element={<ProductDisplay />} /> เส้นทางหลัก
+          <Route path="/not-review" element={<ProductDisplay />} /> {/* เส้นทางตัวอย่างเพิ่มเติม */}
+          <Route path="/review" element={<ReviewPage />} /> {/* เส้นทางหน้าบทวิจารณ์ */}
+          <Route path="/reviewseller" element={<ReviewSell />} /> {/* เส้นทางหน้าบทวิจารณ์สำหรับผู้ขาย */}
         </Routes>
-      </Router>
+      </Router>  
     </div>
   );
 }

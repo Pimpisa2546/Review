@@ -119,3 +119,27 @@ func GetAllReview(c *gin.Context) { // เข้าถึงข้อมูลMe
 	}
 	c.JSON(http.StatusOK, review)
 }
+
+// GetReviewsBySellerID - ดึงรีวิวของผู้ขายตาม sellerID
+func GetReviewsBySellerID(c *gin.Context) {
+    sellerID := c.Param("seller_id") // ดึง sellerID จากพารามิเตอร์ URL
+
+    var reviews []entity.Review
+    db := config.DB()
+
+    // ดึงรีวิวที่เชื่อมโยงกับสินค้าของผู้ขายตาม sellerID
+    result := db.Table("reviews").Select("reviews.*").Joins("JOIN products ON products.id = reviews.products_id").Where("products.seller_id = ?", sellerID).Find(&reviews)
+
+    if result.Error != nil {
+        c.JSON(http.StatusNotFound, gin.H{"error": result.Error.Error()})
+        return
+    }
+
+    if len(reviews) == 0 {
+        c.JSON(http.StatusNotFound, gin.H{"message": "ไม่มีรีวิวสำหรับผู้ขายนี้"})
+        return
+    }
+
+    c.JSON(http.StatusOK, reviews)
+}
+

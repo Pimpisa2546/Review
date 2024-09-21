@@ -22,8 +22,8 @@ const Navbar = () => {
         </p>
         <div className="divider"></div> {/* เส้นแบ่ง */}
         <p
-          onClick={() => handleClick('reviewed')}
-          className={active === 'reviewed' ? 'active' : ''}
+          onClick={() => handleClick('review')}
+          className={active === 'review' ? 'active' : ''}
         >
           รีวิวแล้ว
         </p>

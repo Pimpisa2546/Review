@@ -16,6 +16,6 @@ type Products struct {
 	Status          string
 	Review          []Review `gorm:"foreignKey:products_id"`
 	SellerID        *uint
-	Seller          Seller   `gorm:"foreignKey:SellerID"`
+	Seller          Seller           `gorm:"foreignKey:SellerID"`
 	Product_Orders  []Products_order `gorm:"foreignKey:ProductID"`
 }

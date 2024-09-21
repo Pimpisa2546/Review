@@ -39,8 +39,8 @@
   }
 
 .text p.active {
-    color: #f2fd57;
-    text-shadow: 0 0 10px #edf761;
+    color: #eaa609;
+    text-shadow: 0 0 10px #ffa200;
     font-weight: bold;
 }
 

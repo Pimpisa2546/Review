@@ -46,6 +46,7 @@ func main() {
 		router.PUT("/review/:id", controller.UpdateReview)
 		router.DELETE("/review/:id", controller.DeleteReview)
 		router.GET("/review", controller.GetAllReview)
+		router.GET("/review/seller/:seller_id", controller.GetReviewsBySellerID)
 
 		router.POST("/products", controller.CreateProducts)
 		router.GET("/products", controller.GetProducts)
